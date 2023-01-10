@@ -1,4 +1,4 @@
-module lpm_mult ( result, dataa, datab, sum, clock, clken, aclr )
+module lpm_mult ( result, dataa, datab, sum, clock, clken, aclr );
 parameter lpm_type = "lpm_mult";
 parameter lpm_widtha = 1;
 parameter lpm_widthb = 1;
