@@ -1,0 +1,61 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2023/01/10 21:00:00
+// Design Name: 
+// Module Name: tb_dsp_multiplier
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module tb_dsp_multiplier;
+
+    reg clock;
+    reg clken;
+    reg aclr;
+    reg [7:0] dataa;
+    reg [7:0] datab;
+    reg [7:0] sumin;
+    wire [15:0] result;
+
+    dsp_multiplier dut (
+        .dataa(dataa),
+        .datab(datab),
+        .result(result),
+        .sumin(sumin),
+        .clock(clock), 
+        .clken(clken), 
+        .aclr(aclr)
+    );
+
+    initial begin
+        // Initialize input values
+        dataa = 8'h01;
+        datab = 8'h02;
+        sumin = 8'h03;
+
+        // Assert reset
+        aclr = 1;
+        clken = 1;
+        #5 aclr = 0;
+        clock = 1;
+
+        // Run test
+        forever begin
+            @(posedge clock);
+            {dataa, datab} <= {datab, dataa};
+        end
+    end
+endmodule
