@@ -78,8 +78,8 @@ module dsp_multiplier (
     input clock;
     input clken;
     input aclr;  */
-    wire [15:0] sub_wire0;
-    wire [15:0] result = sub_wire0[15:0];
+    //wire [15:0] sub_wire0;
+    //wire [15:0] result = sub_wire0[15:0];
     //wire [15:0] c;
     //wire [15:0] result;
     //assign result = 0;
@@ -90,7 +90,7 @@ module dsp_multiplier (
         .aclr (aclr),
 		.clken (clken),
 		.clock (clock),
-		.sumin (sumin));
+		.sum (sumin));
 
     defparam
 		lpm_mult_component.lpm_hint = "DEDICATED_MULTIPLIER_CIRCUITRY=YES,MAXIMIZE_SPEED=1",
