@@ -88,9 +88,9 @@ module dsp_multiplier (
         .datab (datab),
         .result (result),
         .aclr (aclr),
-		.clken (clken),
-		.clock (clock),
-		.sum (sumin));
+	.clken (clken),
+	.clock (clock),
+	.sum (sumin));
 
     defparam
 		lpm_mult_component.lpm_hint = "DEDICATED_MULTIPLIER_CIRCUITRY=YES,MAXIMIZE_SPEED=1",
