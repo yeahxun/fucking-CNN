@@ -1,0 +1,239 @@
+`timescale 1 ps / 1 ps
+
+module tb_sysArr();
+    parameter width_height = 4;
+    localparam weight_width = 8 * width_height;
+    localparam sum_width = 16 * width_height;
+    localparam data_width = 8 * width_height;
+
+    // inputs to DUT
+    reg clock;
+    reg active;
+    reg [data_width-1:0] datain;
+    reg [weight_width-1:0] win;
+    reg [sum_width-1:0] sumin;
+    reg [width_height-1:0] wwrite;
+
+    // outputs from DUT
+    wire [sum_width-1:0] maccout;
+    wire [weight_width-1:0] wout;
+    wire [width_height-1:0] wwriteout;
+    wire [width_height-1:0] activeout;
+    wire [data_width-1:0] dataout;
+
+    // instantiation of DUT
+    sysArr DUT (
+        .clock      (clock),
+        .active   (active),
+        .datain   (datain),
+        .win      (win),
+        .sumin    (sumin),
+        .wwrite   (wwrite),
+        .maccout  (maccout),
+        .wout     (wout),
+        .wwriteout(wwriteout),
+        .activeout(activeout),
+        .dataout  (dataout)
+    );
+
+    defparam DUT.width_height = width_height;
+
+    always begin
+        #5;
+        clock = ~clock;
+    end // always
+
+    initial begin
+        clock = 1'b0;
+        active = 1'b1;
+        datain = 32'h0000_0000;
+        win = 32'h0000_0000;
+        sumin = 64'h0000_0000_0000_0000;
+        wwrite = 4'b1111;
+
+        #10;
+
+        //win = 32'h0404_0404;
+        datain = 32'h0000_0001;
+        win = 32'h0000_0001;
+        wwrite = 4'b1111;
+
+        #10; //20
+
+        //win = 32'h0303_0303;
+        datain = 32'h0000_0002;
+        win = 32'h0000_0002;
+
+        #10; //30
+
+        //win = 32'h0202_0202;
+        datain = 32'h0000_0003;
+        win = 32'h0000_0003;
+
+        #10; //40
+
+        //win = 32'h0101_0101;
+        datain = 32'h0000_0004;
+        win = 32'h0000_0004;
+        //wwrite = 4'b0000;
+
+        #10 //50
+
+        datain = 32'h0000_0005;
+        win = 32'h0000_0005;
+        //active = 1'b1;
+
+        #10;  //60
+
+        datain = 32'h0000_0006;
+        win = 32'h0000_0006;
+
+        #10;  //70
+
+        datain = 32'h0000_0007;
+        win = 32'h0000_0007;
+
+        #10;  //80
+
+        datain = 32'h0000_0008;
+        win = 32'h0000_0008;
+
+        #10;  //90
+
+        datain = 32'h0000_0009;
+        win = 32'h0000_0009;
+
+        #10;  //100
+
+        datain = 32'h0E0B_0000;
+
+        #10;  //110
+
+        datain = 32'h0F00_0000;
+        //active = 1'b0;
+
+        #10;  //120
+
+        datain = 32'h0000_0000;
+
+        #30;  //150
+
+        wwrite = 4'b1111;
+        win = 32'h0F0B_0703;
+
+        #10;  //160
+
+        win = 32'h0E0A_0602;
+
+        #10;  //170
+
+        win = 32'h0D09_0501;
+
+        #10;  //180
+
+        win = 32'h0C08_0400;
+        //wwrite = 4'b0000;
+
+        #10;  //190
+
+        datain = 32'h0000_0001;
+        //active = 1'b1;
+
+        #10;  //200
+
+        datain = 32'h0000_0502;
+
+        #10;  //210
+
+        datain = 32'h0009_0603;
+
+        #10;  //220
+
+        datain = 32'h0D0A_0704;
+
+        #10;  //230
+
+        datain = 32'h0E0B_0800;
+
+        #10;  //240
+
+        datain = 32'h0F0C_0000;
+
+        #10;  //250
+
+        datain = 32'h1000_0000;
+
+        #10;  //260
+
+        datain = 32'h0000_0015;
+
+        #10;  //270
+
+        datain = 32'h0000_1D00;
+
+        #10;  //280
+
+        datain = 32'h0021_0000;
+
+        #10;  //290
+
+        datain = 32'h0400_0000;
+
+        #10;  //300
+
+        datain = 32'h0000_0000;
+        //active = 1'b0;
+
+        #30;  //330
+
+        wwrite = 4'b1111;
+        win = 32'h000C_030A;
+
+        #10;  //340
+
+        win = 32'h00AA_0B02;
+
+        #10;  //350
+
+        win = 32'h000C_010A;
+
+        #10;  //360
+
+        win = 32'h0000_0000;
+        //wwrite = 4'b0000;
+
+        #10;  //370
+
+        datain = 32'h0000_0000;
+        //active = 1'b1;
+
+        #10;  //380
+
+        datain = 32'h0000_AA00;
+
+        #10;  //390
+
+        datain = 32'h00DD_BB00;
+
+        #10;  //400
+
+        datain = 32'h01EE_CC00;
+
+        #10;  //410
+
+        datain = 32'h01FF_0000;
+
+        #10;  //420
+
+        datain = 32'h0900_0000;
+        //active = 1'b0;
+
+        #10;  //430
+
+        datain = 32'h0000_0000;
+
+        #30;  //460
+
+        $stop;
+    end // initial
+endmodule // tb_sysArr
