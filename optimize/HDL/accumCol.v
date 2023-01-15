@@ -1,10 +1,11 @@
+`timescale 1ns / 10ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2023/01/15 23:43:36
+// Create Date: 2023/01/15 23:42:42
 // Design Name: 
-// Module Name: tb_accumCol
+// Module Name: accumCol
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -17,92 +18,47 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-// tb_accumTable.v
+
+// accumCol.v
 // Cameron Shinn
 
-`timescale 1ns/10ps
+module accumCol( clock, clear, rd_en, wr_en, rd_addr, wr_addr, rd_data, wr_data);
 
-module tb_accumCol;
-
-    parameter DATA_WIDTH = 8; // number of bits for one piece of data
+    parameter DATA_WIDTH = 16; // number of bits for one piece of data
     parameter MAX_OUT_ROWS = 128; // output height of largest matrix
     parameter MAX_OUT_COLS = 128; // output width of largest possible matrix
     parameter SYS_ARR_COLS = 16; // height of the systolic array
 
     localparam NUM_ACCUM_ROWS = MAX_OUT_ROWS * (MAX_OUT_COLS/SYS_ARR_COLS);
 
-    reg clock;
-    reg reset; // clears array and sets it to 0
-    reg rd_en; // reads the data at rd_addr when high
-    reg wr_en; // writes (and accumulates) data to wr_addr when high
-    reg [$clog2(NUM_ACCUM_ROWS)-1:0] rd_addr;
-    reg [$clog2(NUM_ACCUM_ROWS)-1:0] wr_addr;
-    wire [DATA_WIDTH-1:0] rd_data;
-    reg [DATA_WIDTH-1:0] wr_data;
+    input clock;
+    //input reset;
+    input clear; // clears array and sets it to 0
+    input rd_en; // reads the data at rd_addr when high
+    input wr_en; // writes (and accumulates) data to wr_addr when high
+    input [$clog2(NUM_ACCUM_ROWS)-1:0] rd_addr;
+    input [$clog2(NUM_ACCUM_ROWS)-1:0] wr_addr;
+    output reg signed [DATA_WIDTH-1:0] rd_data;
+    input signed [DATA_WIDTH-1:0] wr_data;
 
-    accumCol test_column (
-        .clock(clock),
-        //.reset(reset),
-        .rd_en(rd_en),
-        .wr_en(wr_en),
-        .rd_addr(rd_addr),
-        .wr_addr(wr_addr),
-        .rd_data(rd_data),
-        .wr_data(wr_data)
-    );
+    reg [DATA_WIDTH-1:0] mem [NUM_ACCUM_ROWS-1:0];
 
-    integer count, i;
+    integer i; // used for indexing
 
-    initial begin
-        clock = 1'b0;
-        count = 0;
-        rd_en = 1'b1;
-        wr_en = 1'b1;
-    end // initial
+    always @(posedge clock) begin
+        if (wr_en) begin
+            mem[wr_addr] <= mem[wr_addr] + wr_data;
+        end // if (wr_en)
 
-    always begin
-        #10
-        clock = ~clock;
-    end // always
+        if (rd_en) begin
+            rd_data <= mem[rd_addr];
+        end // if (rd_en)
 
-    always @(negedge clock) begin
-        i = count - 2;
+        if (clear) begin
+            for (i = 0; i < NUM_ACCUM_ROWS; i = i + 1) begin // clear all entries to 0
+                mem[i] <= 0; // not sure if there is a good way to define literal width
+            end // for (i = 0; i < NUM_ACCUM_ROWS; i = i + 1)
+        end // if (clear)
 
-        if (count == 0) begin
-            reset = 1'b1;
-        end // if (count == 0)
-
-        else if (count == 1) begin
-            reset = 1'b0;
-        end // else if (count == 1)
-
-        else begin
-            wr_data = i % 8;
-            rd_addr = (i-1) % 8;
-            wr_addr = i % 8;
-        end // else
-
-        if (i == 64) begin
-            reset = 1'b1;
-            wr_en = 1'b0;
-        end // if (count == 133)
-
-        else if (count == 70) begin
-            $stop;
-        end // if (count == 135)
-
-        /*if (count > 1) begin
-            if (count % 2 == 1) begin
-                rd_en = 1'b1;
-                wr_en = 1'b1;
-            end // if (count % 2 == 1)
-
-            else begin
-                rd_en = 1'b0;
-                wr_en = 1'b0;
-            end // else
-        end // if (count > 1)*/
-
-        count = count + 1;
-    end
-endmodule // tb_accumCol
+    end // always @(posedge clk)
+endmodule // accumCol
