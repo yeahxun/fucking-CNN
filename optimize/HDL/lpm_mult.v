@@ -51,7 +51,7 @@ module lpm_mult (
             if(aclr!=0)
                 result <= 0;
             else
-                result <= dataa + datab + sum;
+                result <= dataa * datab + sum;
         end
     end
 endmodule
