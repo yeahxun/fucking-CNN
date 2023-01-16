@@ -75,6 +75,9 @@ module pe(
             dataout_c = datain;
             //maccout_c = sumin + (mult_result); //이 mult_result 씨발새끼가 오류가 난다. 
             maccout_c = sumin + result;
+             wout_c    = win;
+            //weight_c    = win;
+            //wout_c      = weight;
         end // if (active == 1'b1)
 
         else begin
@@ -83,11 +86,13 @@ module pe(
             // NOT SURE IF STALL IDEA WILL WORK
             dataout_c = dataout;
             maccout_c = maccout;
+            weight_c = weight;
+            //wout_c = 8'hAA;
         end // else
 
     end // always @(active or datain or sumin)
 
-    always @(*) begin
+    /*always @(*) begin
 
         wwriteout_c = wwrite;
         if ((wwrite == 1'b1) || (wwriteout == 1'b1)) begin
@@ -100,7 +105,7 @@ module pe(
             wout_c = 8'hAA;
         end // else
 
-    end //always @(win or wwrite)
+    end //always @(win or wwrite)*/
 
     always @(posedge clock) begin
 
@@ -108,7 +113,7 @@ module pe(
         dataout   <= dataout_c;
         weight    <= weight_c;
         wout      <= wout_c;
-        wwriteout <= wwriteout_c;
+        //wwriteout <= wwriteout_c;
         activeout <= activeout_c;
 
     end // always @(posedge clk)
